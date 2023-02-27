@@ -341,3 +341,4 @@ plot!(figure3, K_plot3, [y_cmin y_cmax],
 	label = ["limit cycle" false])
 ```
 
+## The end
