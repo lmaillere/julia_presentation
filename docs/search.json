@@ -1,0 +1,79 @@
+[
+  {
+    "objectID": "julia_pres.html#introduction",
+    "href": "julia_pres.html#introduction",
+    "title": "Dynamical systems with Julia",
+    "section": "Introduction",
+    "text": "Introduction\nA very swift introduction to Julia\n\nsimulating (ordinary) differential equations with DifferentialEquations.jl\nbasic to intermediate level plotting with Plots.jl\npopulation dynamics context\nalso a test of quarto reveal.js presentations\n\n\nWorking example: a predator-prey model attributed to Rosenzweig & MacArthur\n\\[\n\\left\\{\\begin{array}{l}\n\\dot x = \\displaystyle  rx\\left(1-\\frac{x}{K}\\right) - c\\frac{x}{h+x}y,\\\\\n\\dot y = \\displaystyle  b\\frac{x}{h+x}y - my,\n\\end{array}\\right.\n\\]\nwhere \\(x\\) is the prey population density, \\(y\\) the predator population density"
+  },
+  {
+    "objectID": "julia_pres.html#package-loading-model-definition",
+    "href": "julia_pres.html#package-loading-model-definition",
+    "title": "Dynamical systems with Julia",
+    "section": "Package loading, model definition",
+    "text": "Package loading, model definition\nPackages:\n\nusing DifferentialEquations, StaticArrays\n\n\nDifferentialEquations.jl provides numerical solvers (and more)\nStaticArrays.jl allows statically sized arrays in memory (speed up integration)\n\n\nModel definition:\n\nfunction model_rma(u, params, t)\n    r, K, c, h, b, m = params       # unpacking parameters\n    x = u[1]                        # unpacking state\n    y = u[2]\n    \n    dx = r*x*(1-x/K) - c*x/(h+x)*y  # model equations\n    dy = b*x/(h+x)*y - m*y\n    \n    @SVector [dx, dy]               # return derivatives as static arrays\nend\n\n\nthe function arguments should obey (state, parameters, time) order to pass to the solvers of DifferentialEquations.jl"
+  },
+  {
+    "objectID": "julia_pres.html#initial-conditions-parameters-time",
+    "href": "julia_pres.html#initial-conditions-parameters-time",
+    "title": "Dynamical systems with Julia",
+    "section": "Initial conditions, parameters, time",
+    "text": "Initial conditions, parameters, time\n\nInitial conditions\n\n\nx0 = 1.0\ny0 = 2.5\nstate0 = @SVector [x0, y0]      # packing in a Static Array\n\n\n\nParameters\n\n\nr = 1.0 \nK = 10.0\nc = 1.0\nh = 2.0 \nb = 2.0\nm = 1.0 \n\nparams_rma = [r, K, c, h, b, m]     # packing\n\n\n\n\nIntegration time\n\n\ntspan = (0.0, 80.0)     # (start, end) as a tuple\nstep = 0.01"
+  },
+  {
+    "objectID": "julia_pres.html#numerical-integration",
+    "href": "julia_pres.html#numerical-integration",
+    "title": "Dynamical systems with Julia",
+    "section": "Numerical integration",
+    "text": "Numerical integration\n\nDefine the Cauchy problem\n\n\nprob_rma = ODEProblem(model_rma, state0, tspan, params_rma, saveat = step)\n\n\n\nIntegrate\n\n\nsim_rma = solve(prob_rma, abstol=1e-6, reltol=1e-6)\n\n\n\n\nRearrange the simulation in a dataframe (optional)\n\n\nusing DataFrames\n\nsim_rma = DataFrame(sim_rma)\nrename!(sim_rma, :timestamp => :time, :value1 => :x, :value2 => :y)"
+  },
+  {
+    "objectID": "julia_pres.html#numerical-integration-1",
+    "href": "julia_pres.html#numerical-integration-1",
+    "title": "Dynamical systems with Julia",
+    "section": "Numerical integration",
+    "text": "Numerical integration\n\nOne gets the simulated solution along time, every $step timesteps\n\n\nfirst(sim_rma,5)\n\n5×3 DataFrame\n\n\n\nRow\ntime\nx\ny\n\n\n\nFloat64\nFloat64\nFloat64\n\n\n\n\n1\n0.0\n1.0\n2.5\n\n\n2\n0.01\n1.00068\n2.49168\n\n\n3\n0.02\n1.00139\n2.4834\n\n\n4\n0.03\n1.00213\n2.47516\n\n\n5\n0.04\n1.0029\n2.46695"
+  },
+  {
+    "objectID": "julia_pres.html#plotting-against-time",
+    "href": "julia_pres.html#plotting-against-time",
+    "title": "Dynamical systems with Julia",
+    "section": "Plotting against time",
+    "text": "Plotting against time\n\nusing LaTeXStrings, Plots\n\nplot(sim_rma.time, [sim_rma.x sim_rma.y], \n    palette = :tab10,\n    linewidth = 2,\n    title = \"\\n Rosenzweig MacArthur model\",\n    label = [\"prey \" * L\"x\" \"predators \" * L\"y\"],  # latex strings, makrdown latex is off in labels\n    ylabel = \"population densities\",\n    xlabel = \"time\",\n  margin = .5Plots.cm,\n  topmargin=1Plots.cm)"
+  },
+  {
+    "objectID": "julia_pres.html#plotting-in-the-state-space",
+    "href": "julia_pres.html#plotting-in-the-state-space",
+    "title": "Dynamical systems with Julia",
+    "section": "Plotting in the state space",
+    "text": "Plotting in the state space\n\n\nCode\n# functions for the meshgrid\nder_x(x, y) = model_rma([x y], params_rma, 0)[1]/7\nder_y(x, y) = model_rma([x y], params_rma, 0)[2]/7\n\n# meshgrid\nmeshgrid(x, y) = (repeat(x, outer=length(y)), repeat(y, inner=length(x)))\nmeshx, meshy = meshgrid(0:.7:K+.1, 0:.7:K+.1);\n\n# vector field\nfigure2 = quiver(meshx, meshy, quiver =(der_x.(meshx, meshy), der_y.(meshx, meshy)), \n    xlim = (-0.2, K+.1), \n    ylim = (-0.2, K+.1),\n    color = :lightgray,\n    grid = false,\n    title = \"\\n Rosenzweig MacArthur model\",\n    xlabel = \"preys \" * L\"x\",   \n    ylabel = \"predators \" * L\"y\",\n  margin = .2Plots.cm,\n  topmargin= .6Plots.cm,\n  size =(700, 450))\n\n# trajectory\nplot!(figure2, sim_rma.x, sim_rma.y,\n    palette = :tab10,\n    color = 1,\n    lw = 2,\n    label = \"trajectory\")\n# nullclines\nxplot = -0.2:.1:K\n\n# dot x nullcline\nplot!(figure2, xplot, zero(xplot),\ncolor = 2,\nlabel = \"nullcline \" * L\"x\",\nlw = 2)\nvline!(figure2, [m*h/(b-m)],\n    color = 2,\n    label = false,\n    lw = 2)\n        \n# dot y nullcline\nvline!(figure2, [0],\n    color = 3,\n    lw = 2,\n    label = \"nullcline \" * L\"y\")\n    \nplot!(figure2, xplot, r./c.*(h.+xplot).*(1 .-xplot./K),\n    color = 3,\n    lw = 2,\n    label = false)\n\n# equilibria\nplot!(figure2, (0, 0), \n    markershape = :circle, \n    markersize = 5,\n    label = false,\n    color = 4)\n\nplot!(figure2, (K, 0), \n    markershape = :circle, \n    markersize = 5,\n    label = false,\n    color = 4)\n\nplot!(figure2, (m*h/(b-m), r/c*(h+m*h/(b-m))*(1-m*h/(b-m)/K)),\n    markershape = :circle, \n    markersize = 5,\n    label = false,\n    color = 3)"
+  },
+  {
+    "objectID": "julia_pres.html#bifurcation-diagram",
+    "href": "julia_pres.html#bifurcation-diagram",
+    "title": "Dynamical systems with Julia",
+    "section": "Bifurcation diagram",
+    "text": "Bifurcation diagram\n\nModel undergoes transcritical and Hopf bifurcations as \\(K\\) increases\n\nanalytics below Hopf bifurcation\nnumerics for asymptotics above Hopf bifurcation\n\n\n\n\nIdea for the numerics stuff\n\nFor a given \\(K\\), simulate for a long time to remove transients\nFrom this, start a new simulation and get the min and max of the limit cycle"
+  },
+  {
+    "objectID": "julia_pres.html#bifurcation-diagram-1",
+    "href": "julia_pres.html#bifurcation-diagram-1",
+    "title": "Dynamical systems with Julia",
+    "section": "Bifurcation diagram",
+    "text": "Bifurcation diagram\n\nLoop on \\(K\\) values, compute equilibria\n\n\nK_step = 0.1\n\n# before transcritical\nK_plot1 = 0: K_step: m*h/(b-m)\ny_eq01 = ones(length(K_plot1)).*0\n\n# between transcritical and Hopf\nK_plot2 = m*h/(b-m): K_step: h+2*m*h/(b-m)\ny_eq02 = ones(length(K_plot2)).*0\ny_co2 = [r/c*(h+m*h/(b-m))*(1-m*h/(b-m)/K_p) for K_p in K_plot2]  # may have broadcasted\n\n# above Hopf\nK_plot3 = h+2*m*h/(b-m)-K_step/5: (K_step/10) :8\ny_eq03 = ones(length(K_plot3)).*0\ny_co3 = [r/c*(h+m*h/(b-m))*(1-m*h/(b-m)/K_p) for K_p in K_plot3]; # may have broadcasted"
+  },
+  {
+    "objectID": "julia_pres.html#bifurcation-diagram-2",
+    "href": "julia_pres.html#bifurcation-diagram-2",
+    "title": "Dynamical systems with Julia",
+    "section": "Bifurcation diagram",
+    "text": "Bifurcation diagram\n\nExtrema of the limit cycles (simulate transients, restart from there, get extrema)\n\n\n# transient integration time\nt_trans = (0.0, 8000);\n\n# for storage\ni = 1\ny_cmin = zero(K_plot3)\ny_cmax = zero(K_plot3)\n\n# estimate limit cycle through loop on K \nfor K_c in K_plot3                              # loop on K values\n  params_rma_cycle = [r, K_c, c, h, b, m]   # set parameters\n\n    # transient initial value problem; simulation\n  rma_trans_pbe =  ODEProblem(model_rma, state0, t_trans, params_rma_cycle)\n  post_trans2 = solve(rma_trans_pbe, save_everystep = false, save_start = false,  abstol=1e-6, reltol=1e-6)\n    \n    # limit cycle initial value problem; simulation\n  rma_cycle_pbe =  ODEProblem(model_rma, post_trans2[:,1], tspan, params_rma_cycle, saveat = step)\n  sol_cycle = solve(rma_cycle_pbe, abstol=1e-6, reltol=1e-6)\n    \n    # get the extrema\n  y_cmin[i] = minimum(sol_cycle[2,:])           # pushing is probably bad programming here\n  y_cmax[i] = maximum(sol_cycle[2,:])\n    i+=1\nend"
+  },
+  {
+    "objectID": "julia_pres.html#bifurcation-diagram-plot",
+    "href": "julia_pres.html#bifurcation-diagram-plot",
+    "title": "Dynamical systems with Julia",
+    "section": "Bifurcation diagram: plot",
+    "text": "Bifurcation diagram: plot\n\n\nCode\nfigure3 = plot(K_plot1, y_eq01,\n    palette = :tab10,\n    color = 3,\n    lw = 2,\n    label = \"asymptotically stable\",\n    legend = :topleft,\n    title = \"\\n Bifurcation Diagram\",\n    xlabel = \"carrying capacity \" * L\"K\",\n    ylabel = \"predators density\",\n  margin = .2Plots.cm,\n  topmargin= .6Plots.cm,\n    size=(700, 450))\n\nplot!(figure3, K_plot2, [y_eq02 y_co2],\n    color = [2 3],\n    lw = 2,\n    label = [\"unstable\" false])\n\nplot!(figure3, K_plot3, [y_eq03 y_co3],\n    color = [2 2],\n    lw = 2,\n    label = false)\n\nplot!(figure3, K_plot3, [y_cmin y_cmax],\n    color = 1,\n    lw = 2,\n    label = [\"limit cycle\" false])\n\n\n\n\n\nA gentle introduction to Julia"
+  }
+]

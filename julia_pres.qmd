@@ -1,0 +1,343 @@
+---
+title: "Dynamical systems with Julia"
+subtitle: "with applications to population dynamics"
+author: "Ludovic Mailleret"
+institute: "M2P2, UMR ISA (INRAE, Univ. Côte d'Azur) & MaCBES (Inria)"
+
+format:
+  revealjs:
+    slide-number: true
+    smaller: true
+    scrollable: true
+    theme: default
+    footer: "A gentle introduction to Julia"
+    chalkboard: true
+
+execute: 
+  output: false
+  echo: true
+
+jupyter: julia-1.8
+---
+
+## Introduction
+
+A very swift introduction to `Julia`
+
+- simulating (ordinary) differential equations with `DifferentialEquations.jl`
+- basic to intermediate level plotting with `Plots.jl`
+- population dynamics context
+- *also a test of quarto reveal.js presentations*
+
+. . .
+
+Working example: a predator-prey model attributed to [Rosenzweig & MacArthur](http://www.jstor.com/stable/2458702)
+
+$$
+\left\{\begin{array}{l}
+\dot x = \displaystyle  rx\left(1-\frac{x}{K}\right) - c\frac{x}{h+x}y,\\
+\dot y = \displaystyle  b\frac{x}{h+x}y - my,
+\end{array}\right.
+$$
+
+where $x$ is the prey population density, $y$ the predator population density
+
+## Package loading, model definition
+
+**Packages:**
+
+```{julia}
+using DifferentialEquations, StaticArrays
+```
+
+- `DifferentialEquations.jl` provides numerical solvers (and more)
+- `StaticArrays.jl` allows statically sized arrays in memory (speed up integration)
+ 
+. . .
+
+**Model definition:**
+
+```{julia}
+function model_rma(u, params, t)
+    r, K, c, h, b, m = params 		# unpacking parameters
+    x = u[1] 						# unpacking state
+    y = u[2]
+	
+    dx = r*x*(1-x/K) - c*x/(h+x)*y 	# model equations
+    dy = b*x/(h+x)*y - m*y
+    
+	@SVector [dx, dy] 				# return derivatives as static arrays
+end
+```
+
+- the function arguments should obey  (*state, parameters, time*) order to pass to the solvers of `DifferentialEquations.jl`
+
+## Initial conditions, parameters, time
+
+- Initial conditions
+
+```{julia}
+x0 = 1.0
+y0 = 2.5
+state0 = @SVector [x0, y0] 		# packing in a Static Array
+```
+
+. . . 
+
+- Parameters
+
+```{julia}
+r = 1.0 
+K = 10.0
+c = 1.0
+h = 2.0 
+b = 2.0
+m = 1.0 
+
+params_rma = [r, K, c, h, b, m] 	# packing
+```
+
+. . . 
+
+- Integration time
+
+```{julia}
+tspan = (0.0, 80.0) 	# (start, end) as a tuple
+step = 0.01
+```
+
+
+## Numerical integration
+
+- Define the Cauchy problem
+
+```{julia}
+prob_rma = ODEProblem(model_rma, state0, tspan, params_rma, saveat = step)
+```
+
+. . . 
+
+- Integrate
+
+```{julia}
+sim_rma = solve(prob_rma, abstol=1e-6, reltol=1e-6)
+```
+
+. . . 
+
+- Rearrange the simulation in a `dataframe` (optional)
+
+```{julia}
+using DataFrames
+
+sim_rma = DataFrame(sim_rma)
+rename!(sim_rma, :timestamp => :time, :value1 => :x, :value2 => :y)
+```
+
+## Numerical integration
+
+- One gets the simulated solution along time, every $step timesteps
+
+```{julia}
+#| output: true
+first(sim_rma,5)
+```
+
+## Plotting against time
+
+```{julia}
+#| output: true
+#| fig-align: center
+using LaTeXStrings, Plots
+
+plot(sim_rma.time, [sim_rma.x sim_rma.y], 
+	palette = :tab10,
+	linewidth = 2,
+	title = "\n Rosenzweig MacArthur model",
+	label = ["prey " * L"x" "predators " * L"y"],  # latex strings, makrdown latex is off in labels
+	ylabel = "population densities",
+	xlabel = "time",
+  margin = .5Plots.cm,
+  topmargin=1Plots.cm)
+```
+
+## Plotting in the state space
+
+```{julia}
+#| output: true
+#| fig-align: center
+#| code-fold: true
+
+# functions for the meshgrid
+der_x(x, y) = model_rma([x y], params_rma, 0)[1]/7
+der_y(x, y) = model_rma([x y], params_rma, 0)[2]/7
+
+# meshgrid
+meshgrid(x, y) = (repeat(x, outer=length(y)), repeat(y, inner=length(x)))
+meshx, meshy = meshgrid(0:.7:K+.1, 0:.7:K+.1);
+
+# vector field
+figure2 = quiver(meshx, meshy, quiver =(der_x.(meshx, meshy), der_y.(meshx, meshy)), 
+	xlim = (-0.2, K+.1), 
+	ylim = (-0.2, K+.1),
+	color = :lightgray,
+	grid = false,
+	title = "\n Rosenzweig MacArthur model",
+	xlabel = "preys " * L"x",   
+	ylabel = "predators " * L"y",
+  margin = .2Plots.cm,
+  topmargin= .6Plots.cm,
+  size =(700, 450))
+
+# trajectory
+plot!(figure2, sim_rma.x, sim_rma.y,
+	palette = :tab10,
+	color = 1,
+	lw = 2,
+	label = "trajectory")
+# nullclines
+xplot = -0.2:.1:K
+
+# dot x nullcline
+plot!(figure2, xplot, zero(xplot),
+color = 2,
+label = "nullcline " * L"x",
+lw = 2)
+vline!(figure2, [m*h/(b-m)],
+	color = 2,
+	label = false,
+	lw = 2)
+		
+# dot y nullcline
+vline!(figure2, [0],
+	color = 3,
+	lw = 2,
+	label = "nullcline " * L"y")
+	
+plot!(figure2, xplot, r./c.*(h.+xplot).*(1 .-xplot./K),
+	color = 3,
+	lw = 2,
+	label = false)
+
+# equilibria
+plot!(figure2, (0, 0), 
+	markershape = :circle, 
+	markersize = 5,
+	label = false,
+	color = 4)
+
+plot!(figure2, (K, 0), 
+	markershape = :circle, 
+	markersize = 5,
+	label = false,
+	color = 4)
+
+plot!(figure2, (m*h/(b-m), r/c*(h+m*h/(b-m))*(1-m*h/(b-m)/K)),
+	markershape = :circle, 
+	markersize = 5,
+	label = false,
+	color = 3)
+```
+
+## Bifurcation diagram
+
+* Model undergoes transcritical and Hopf bifurcations as $K$ increases
+  * analytics below Hopf bifurcation
+  * **numerics** for asymptotics above Hopf bifurcation
+
+. . . 
+
+- Idea for the numerics stuff
+  - For a given $K$, simulate for a *long time* to remove transients
+  - From this, start a new simulation and get the `min` and `max` of the limit cycle
+
+## Bifurcation diagram
+
+-  Loop on $K$ values, compute equilibria
+
+```{julia}
+K_step = 0.1
+
+# before transcritical
+K_plot1 = 0: K_step: m*h/(b-m)
+y_eq01 = ones(length(K_plot1)).*0
+
+# between transcritical and Hopf
+K_plot2 = m*h/(b-m): K_step: h+2*m*h/(b-m)
+y_eq02 = ones(length(K_plot2)).*0
+y_co2 = [r/c*(h+m*h/(b-m))*(1-m*h/(b-m)/K_p) for K_p in K_plot2]  # may have broadcasted
+
+# above Hopf
+K_plot3 = h+2*m*h/(b-m)-K_step/5: (K_step/10) :8
+y_eq03 = ones(length(K_plot3)).*0
+y_co3 = [r/c*(h+m*h/(b-m))*(1-m*h/(b-m)/K_p) for K_p in K_plot3]; # may have broadcasted
+```
+
+## Bifurcation diagram
+
+- Extrema of the limit cycles (simulate transients, restart from there, get extrema)
+
+```{julia}
+# transient integration time
+t_trans = (0.0, 8000);
+
+# for storage
+i = 1
+y_cmin = zero(K_plot3)
+y_cmax = zero(K_plot3)
+
+# estimate limit cycle through loop on K 
+for K_c in K_plot3  							# loop on K values
+  params_rma_cycle = [r, K_c, c, h, b, m] 	# set parameters
+
+	# transient initial value problem; simulation
+  rma_trans_pbe =  ODEProblem(model_rma, state0, t_trans, params_rma_cycle)
+  post_trans2 = solve(rma_trans_pbe, save_everystep = false, save_start = false,  abstol=1e-6, reltol=1e-6)
+	
+    # limit cycle initial value problem; simulation
+  rma_cycle_pbe =  ODEProblem(model_rma, post_trans2[:,1], tspan, params_rma_cycle, saveat = step)
+  sol_cycle = solve(rma_cycle_pbe, abstol=1e-6, reltol=1e-6)
+	
+	# get the extrema
+  y_cmin[i] = minimum(sol_cycle[2,:])			# pushing is probably bad programming here
+  y_cmax[i] = maximum(sol_cycle[2,:])
+	i+=1
+end
+```
+
+## Bifurcation diagram: plot
+
+```{julia}
+#| output: true
+#| fig-align: center
+#| code-fold: true
+
+figure3 = plot(K_plot1, y_eq01,
+	palette = :tab10,
+	color = 3,
+	lw = 2,
+	label = "asymptotically stable",
+	legend = :topleft,
+	title = "\n Bifurcation Diagram",
+	xlabel = "carrying capacity " * L"K",
+	ylabel = "predators density",
+  margin = .2Plots.cm,
+  topmargin= .6Plots.cm,
+	size=(700, 450))
+
+plot!(figure3, K_plot2, [y_eq02 y_co2],
+	color = [2 3],
+	lw = 2,
+	label = ["unstable" false])
+
+plot!(figure3, K_plot3, [y_eq03 y_co3],
+	color = [2 2],
+	lw = 2,
+	label = false)
+
+plot!(figure3, K_plot3, [y_cmin y_cmax],
+	color = 1,
+	lw = 2,
+	label = ["limit cycle" false])
+```
+
