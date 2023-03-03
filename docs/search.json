@@ -74,7 +74,7 @@
     "href": "julia_pres.html#bifurcation-diagram-plot",
     "title": "Dynamical systems with Julia",
     "section": "Bifurcation diagram: plot",
-    "text": "Bifurcation diagram: plot\n\n\nCode\nfigure3 = plot(K_plot1, y_eq01,\n    palette = :tab10,\n    color = 3,\n    lw = 2,\n    label = \"asymptotically stable\",\n    legend = :topleft,\n    title = \"\\n Bifurcation Diagram\",\n    xlabel = \"carrying capacity \" * L\"K\",\n    ylabel = \"predators density\",\n  margin = .2Plots.cm,\n  topmargin= .6Plots.cm,\n    size=(700, 450))\n\nplot!(figure3, K_plot2, [y_eq02 y_co2],\n    color = [2 3],\n    lw = 2,\n    label = [\"unstable\" false])\n\nplot!(figure3, K_plot3, [y_eq03 y_co3],\n    color = [2 2],\n    lw = 2,\n    label = false)\n\nplot!(figure3, K_plot3, [y_cmin y_cmax],\n    color = 1,\n    lw = 2,\n    label = [\"limit cycle\" false])"
+    "text": "Bifurcation diagram: plot\n\n\nCode\nfigure3 = plot(K_plot1, y_eq01,\n    palette = :tab10,\n    color = 3,\n    lw = 2,\n    label = \"asymptotically stable\",\n    legend = :topleft,\n    title = \"\\n Bifurcation Diagram\",\n    xlabel = \"carrying capacity \" * L\"K\",\n    ylabel = \"predators density\",\n    margin = .2Plots.cm,\n    topmargin= .6Plots.cm,\n    size=(700, 450))\n\nplot!(figure3, K_plot2, [y_eq02 y_co2],\n    color = [2 3],\n    lw = 2,\n    label = [\"unstable\" false])\n\nplot!(figure3, K_plot3, [y_eq03 y_co3],\n    color = [2 2],\n    lw = 2,\n    label = false)\n\nplot!(figure3, K_plot3, [y_cmin y_cmax],\n    color = 1,\n    lw = 2,\n    label = [\"limit cycle\" false])"
   },
   {
     "objectID": "julia_pres.html#the-end",

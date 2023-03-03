@@ -325,8 +325,8 @@ figure3 = plot(K_plot1, y_eq01,
 	title = "\n Bifurcation Diagram",
 	xlabel = "carrying capacity " * L"K",
 	ylabel = "predators density",
-  margin = .2Plots.cm,
-  topmargin= .6Plots.cm,
+    margin = .2Plots.cm,
+    topmargin= .6Plots.cm,
 	size=(700, 450))
 
 plot!(figure3, K_plot2, [y_eq02 y_co2],

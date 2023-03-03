@@ -529,7 +529,7 @@ Ludovic Mailleret
 </ul>
 <div class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">first</span>(sim_rma,<span class="fl">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="42">
+<div class="cell-output cell-output-display" data-execution_count="58">
 <div><div style="float: left;"><span>5×3 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame" style="margin-bottom: 6px;">
 <thead>
@@ -771,8 +771,8 @@ Ludovic Mailleret
 <span id="cb14-7"><a href="#cb14-7"></a>    title <span class="op">=</span> <span class="st">"</span><span class="sc">\n</span><span class="st"> Bifurcation Diagram"</span>,</span>
 <span id="cb14-8"><a href="#cb14-8"></a>    xlabel <span class="op">=</span> <span class="st">"carrying capacity "</span> <span class="op">*</span> L<span class="st">"K"</span>,</span>
 <span id="cb14-9"><a href="#cb14-9"></a>    ylabel <span class="op">=</span> <span class="st">"predators density"</span>,</span>
-<span id="cb14-10"><a href="#cb14-10"></a>  margin <span class="op">=</span> <span class="fl">.2</span>Plots.cm,</span>
-<span id="cb14-11"><a href="#cb14-11"></a>  topmargin<span class="op">=</span> <span class="fl">.6</span>Plots.cm,</span>
+<span id="cb14-10"><a href="#cb14-10"></a>    margin <span class="op">=</span> <span class="fl">.2</span>Plots.cm,</span>
+<span id="cb14-11"><a href="#cb14-11"></a>    topmargin<span class="op">=</span> <span class="fl">.6</span>Plots.cm,</span>
 <span id="cb14-12"><a href="#cb14-12"></a>    size<span class="op">=</span>(<span class="fl">700</span>, <span class="fl">450</span>))</span>
 <span id="cb14-13"><a href="#cb14-13"></a></span>
 <span id="cb14-14"><a href="#cb14-14"></a><span class="fu">plot!</span>(figure3, K_plot2, [y_eq02 y_co2],</span>
