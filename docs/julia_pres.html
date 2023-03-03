@@ -737,20 +737,22 @@ Ludovic Mailleret
 <span id="cb13-9"><a href="#cb13-9"></a><span class="co"># estimate limit cycle through loop on K </span></span>
 <span id="cb13-10"><a href="#cb13-10"></a><span class="cf">for</span> K_c <span class="kw">in</span> K_plot3                              <span class="co"># loop on K values</span></span>
 <span id="cb13-11"><a href="#cb13-11"></a>  params_rma_cycle <span class="op">=</span> [r, K_c, c, h, b, m]   <span class="co"># set parameters</span></span>
-<span id="cb13-12"><a href="#cb13-12"></a></span>
-<span id="cb13-13"><a href="#cb13-13"></a>    <span class="co"># transient initial value problem; simulation</span></span>
+<span id="cb13-12"><a href="#cb13-12"></a>  </span>
+<span id="cb13-13"><a href="#cb13-13"></a>  <span class="co"># transient initial value problem; simulation</span></span>
 <span id="cb13-14"><a href="#cb13-14"></a>  rma_trans_pbe <span class="op">=</span>  <span class="fu">ODEProblem</span>(model_rma, state0, t_trans, params_rma_cycle)</span>
-<span id="cb13-15"><a href="#cb13-15"></a>  post_trans2 <span class="op">=</span> <span class="fu">solve</span>(rma_trans_pbe, save_everystep <span class="op">=</span> <span class="cn">false</span>, save_start <span class="op">=</span> <span class="cn">false</span>,  abstol<span class="op">=</span><span class="fl">1e-6</span>, reltol<span class="op">=</span><span class="fl">1e-6</span>)</span>
-<span id="cb13-16"><a href="#cb13-16"></a>    </span>
-<span id="cb13-17"><a href="#cb13-17"></a>    <span class="co"># limit cycle initial value problem; simulation</span></span>
-<span id="cb13-18"><a href="#cb13-18"></a>  rma_cycle_pbe <span class="op">=</span>  <span class="fu">ODEProblem</span>(model_rma, post_trans2[<span class="op">:</span>,<span class="fl">1</span>], tspan, params_rma_cycle, saveat <span class="op">=</span> step)</span>
-<span id="cb13-19"><a href="#cb13-19"></a>  sol_cycle <span class="op">=</span> <span class="fu">solve</span>(rma_cycle_pbe, abstol<span class="op">=</span><span class="fl">1e-6</span>, reltol<span class="op">=</span><span class="fl">1e-6</span>)</span>
-<span id="cb13-20"><a href="#cb13-20"></a>    </span>
-<span id="cb13-21"><a href="#cb13-21"></a>    <span class="co"># get the extrema</span></span>
-<span id="cb13-22"><a href="#cb13-22"></a>  y_cmin[i] <span class="op">=</span> <span class="fu">minimum</span>(sol_cycle[<span class="fl">2</span>,<span class="op">:</span>])           <span class="co"># pushing is probably bad programming here</span></span>
-<span id="cb13-23"><a href="#cb13-23"></a>  y_cmax[i] <span class="op">=</span> <span class="fu">maximum</span>(sol_cycle[<span class="fl">2</span>,<span class="op">:</span>])</span>
-<span id="cb13-24"><a href="#cb13-24"></a>    i<span class="op">+=</span><span class="fl">1</span></span>
-<span id="cb13-25"><a href="#cb13-25"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-15"><a href="#cb13-15"></a>  <span class="co"># with such arguments `solve` yields only the final value of the simulation</span></span>
+<span id="cb13-16"><a href="#cb13-16"></a>  post_trans2 <span class="op">=</span> <span class="fu">solve</span>(rma_trans_pbe, save_everystep <span class="op">=</span> <span class="cn">false</span>, save_start <span class="op">=</span> <span class="cn">false</span>,  abstol<span class="op">=</span><span class="fl">1e-6</span>, reltol<span class="op">=</span><span class="fl">1e-6</span>)</span>
+<span id="cb13-17"><a href="#cb13-17"></a>  </span>
+<span id="cb13-18"><a href="#cb13-18"></a>  <span class="co"># limit cycle initial value problem; simulation</span></span>
+<span id="cb13-19"><a href="#cb13-19"></a>  rma_cycle_pbe <span class="op">=</span>  <span class="fu">ODEProblem</span>(model_rma, post_trans2[<span class="op">:</span>,<span class="fl">1</span>], tspan, params_rma_cycle, saveat <span class="op">=</span> step)</span>
+<span id="cb13-20"><a href="#cb13-20"></a>  sol_cycle <span class="op">=</span> <span class="fu">solve</span>(rma_cycle_pbe, abstol<span class="op">=</span><span class="fl">1e-6</span>, reltol<span class="op">=</span><span class="fl">1e-6</span>)</span>
+<span id="cb13-21"><a href="#cb13-21"></a>  </span>
+<span id="cb13-22"><a href="#cb13-22"></a>  <span class="co"># get the extrema of y</span></span>
+<span id="cb13-23"><a href="#cb13-23"></a>  y_cmin[i] <span class="op">=</span> <span class="fu">minimum</span>(sol_cycle[<span class="fl">2</span>,<span class="op">:</span>])           </span>
+<span id="cb13-24"><a href="#cb13-24"></a>  y_cmax[i] <span class="op">=</span> <span class="fu">maximum</span>(sol_cycle[<span class="fl">2</span>,<span class="op">:</span>])</span>
+<span id="cb13-25"><a href="#cb13-25"></a>  </span>
+<span id="cb13-26"><a href="#cb13-26"></a>  i<span class="op">+=</span><span class="fl">1</span></span>
+<span id="cb13-27"><a href="#cb13-27"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="bifurcation-diagram-plot" class="slide level2">

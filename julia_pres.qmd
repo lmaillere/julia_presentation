@@ -289,19 +289,21 @@ y_cmax = zero(K_plot3)
 # estimate limit cycle through loop on K 
 for K_c in K_plot3  							# loop on K values
   params_rma_cycle = [r, K_c, c, h, b, m] 	# set parameters
-
-	# transient initial value problem; simulation
+  
+  # transient initial value problem; simulation
   rma_trans_pbe =  ODEProblem(model_rma, state0, t_trans, params_rma_cycle)
+  # with such arguments `solve` yields only the final value of the simulation
   post_trans2 = solve(rma_trans_pbe, save_everystep = false, save_start = false,  abstol=1e-6, reltol=1e-6)
-	
-    # limit cycle initial value problem; simulation
+  
+  # limit cycle initial value problem; simulation
   rma_cycle_pbe =  ODEProblem(model_rma, post_trans2[:,1], tspan, params_rma_cycle, saveat = step)
   sol_cycle = solve(rma_cycle_pbe, abstol=1e-6, reltol=1e-6)
-	
-	# get the extrema
-  y_cmin[i] = minimum(sol_cycle[2,:])			# pushing is probably bad programming here
+  
+  # get the extrema of y
+  y_cmin[i] = minimum(sol_cycle[2,:])			
   y_cmax[i] = maximum(sol_cycle[2,:])
-	i+=1
+  
+  i+=1
 end
 ```
 
