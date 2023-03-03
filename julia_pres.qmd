@@ -157,8 +157,8 @@ plot(sim_rma.time, [sim_rma.x sim_rma.y],
 	label = ["prey " * L"x" "predators " * L"y"],  # latex strings, makrdown latex is off in labels
 	ylabel = "population densities",
 	xlabel = "time",
-  margin = .5Plots.cm,
-  topmargin=1Plots.cm)
+  	margin = .5Plots.cm,
+  	topmargin=1Plots.cm)
 ```
 
 ## Plotting in the state space
@@ -185,9 +185,9 @@ figure2 = quiver(meshx, meshy, quiver =(der_x.(meshx, meshy), der_y.(meshx, mesh
 	title = "\n Rosenzweig MacArthur model",
 	xlabel = "preys " * L"x",   
 	ylabel = "predators " * L"y",
-  margin = .2Plots.cm,
-  topmargin= .6Plots.cm,
-  size =(700, 450))
+  	margin = .2Plots.cm,
+  	topmargin= .6Plots.cm,
+  	size =(700, 450))
 
 # trajectory
 plot!(figure2, sim_rma.x, sim_rma.y,
@@ -195,29 +195,31 @@ plot!(figure2, sim_rma.x, sim_rma.y,
 	color = 1,
 	lw = 2,
 	label = "trajectory")
+
 # nullclines
 xplot = -0.2:.1:K
 
 # dot x nullcline
 plot!(figure2, xplot, zero(xplot),
-color = 2,
-label = "nullcline " * L"x",
-lw = 2)
+	  color = 2,
+	  label = "nullcline " * L"\dot x",
+	  lw = 2)
+
 vline!(figure2, [m*h/(b-m)],
-	color = 2,
-	label = false,
-	lw = 2)
+	   color = 2,
+	   label = false,
+	   lw = 2)
 		
 # dot y nullcline
 vline!(figure2, [0],
-	color = 3,
-	lw = 2,
-	label = "nullcline " * L"y")
+	   color = 3,
+	   lw = 2,
+	   label = "nullcline " * L"\dot y")
 	
 plot!(figure2, xplot, r./c.*(h.+xplot).*(1 .-xplot./K),
-	color = 3,
-	lw = 2,
-	label = false)
+	  color = 3,
+	  lw = 2,
+	  label = false)
 
 # equilibria
 plot!(figure2, (0, 0), 

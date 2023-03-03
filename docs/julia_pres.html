@@ -529,7 +529,7 @@ Ludovic Mailleret
 </ul>
 <div class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource julia number-lines code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">first</span>(sim_rma,<span class="fl">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="10">
+<div class="cell-output cell-output-display" data-execution_count="42">
 <div><div style="float: left;"><span>5×3 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
 <table class="data-frame" style="margin-bottom: 6px;">
 <thead>
@@ -595,8 +595,8 @@ Ludovic Mailleret
 <span id="cb10-7"><a href="#cb10-7"></a>    label <span class="op">=</span> [<span class="st">"prey "</span> <span class="op">*</span> L<span class="st">"x"</span> <span class="st">"predators "</span> <span class="op">*</span> L<span class="st">"y"</span>],  <span class="co"># latex strings, makrdown latex is off in labels</span></span>
 <span id="cb10-8"><a href="#cb10-8"></a>    ylabel <span class="op">=</span> <span class="st">"population densities"</span>,</span>
 <span id="cb10-9"><a href="#cb10-9"></a>    xlabel <span class="op">=</span> <span class="st">"time"</span>,</span>
-<span id="cb10-10"><a href="#cb10-10"></a>  margin <span class="op">=</span> <span class="fl">.5</span>Plots.cm,</span>
-<span id="cb10-11"><a href="#cb10-11"></a>  topmargin<span class="op">=</span><span class="fl">1</span>Plots.cm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-10"><a href="#cb10-10"></a>    margin <span class="op">=</span> <span class="fl">.5</span>Plots.cm,</span>
+<span id="cb10-11"><a href="#cb10-11"></a>    topmargin<span class="op">=</span><span class="fl">1</span>Plots.cm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
 <img data-src="julia_pres_files/figure-revealjs/cell-11-output-1.svg" class="r-stretch quarto-figure-center"></section>
@@ -622,9 +622,9 @@ Ludovic Mailleret
 <span id="cb11-15"><a href="#cb11-15"></a>    title <span class="op">=</span> <span class="st">"</span><span class="sc">\n</span><span class="st"> Rosenzweig MacArthur model"</span>,</span>
 <span id="cb11-16"><a href="#cb11-16"></a>    xlabel <span class="op">=</span> <span class="st">"preys "</span> <span class="op">*</span> L<span class="st">"x"</span>,   </span>
 <span id="cb11-17"><a href="#cb11-17"></a>    ylabel <span class="op">=</span> <span class="st">"predators "</span> <span class="op">*</span> L<span class="st">"y"</span>,</span>
-<span id="cb11-18"><a href="#cb11-18"></a>  margin <span class="op">=</span> <span class="fl">.2</span>Plots.cm,</span>
-<span id="cb11-19"><a href="#cb11-19"></a>  topmargin<span class="op">=</span> <span class="fl">.6</span>Plots.cm,</span>
-<span id="cb11-20"><a href="#cb11-20"></a>  size <span class="op">=</span>(<span class="fl">700</span>, <span class="fl">450</span>))</span>
+<span id="cb11-18"><a href="#cb11-18"></a>    margin <span class="op">=</span> <span class="fl">.2</span>Plots.cm,</span>
+<span id="cb11-19"><a href="#cb11-19"></a>    topmargin<span class="op">=</span> <span class="fl">.6</span>Plots.cm,</span>
+<span id="cb11-20"><a href="#cb11-20"></a>    size <span class="op">=</span>(<span class="fl">700</span>, <span class="fl">450</span>))</span>
 <span id="cb11-21"><a href="#cb11-21"></a></span>
 <span id="cb11-22"><a href="#cb11-22"></a><span class="co"># trajectory</span></span>
 <span id="cb11-23"><a href="#cb11-23"></a><span class="fu">plot!</span>(figure2, sim_rma.x, sim_rma.y,</span>
@@ -632,48 +632,50 @@ Ludovic Mailleret
 <span id="cb11-25"><a href="#cb11-25"></a>    color <span class="op">=</span> <span class="fl">1</span>,</span>
 <span id="cb11-26"><a href="#cb11-26"></a>    lw <span class="op">=</span> <span class="fl">2</span>,</span>
 <span id="cb11-27"><a href="#cb11-27"></a>    label <span class="op">=</span> <span class="st">"trajectory"</span>)</span>
-<span id="cb11-28"><a href="#cb11-28"></a><span class="co"># nullclines</span></span>
-<span id="cb11-29"><a href="#cb11-29"></a>xplot <span class="op">=</span> <span class="op">-</span><span class="fl">0.2</span><span class="op">:</span><span class="fl">.1</span><span class="op">:</span>K</span>
-<span id="cb11-30"><a href="#cb11-30"></a></span>
-<span id="cb11-31"><a href="#cb11-31"></a><span class="co"># dot x nullcline</span></span>
-<span id="cb11-32"><a href="#cb11-32"></a><span class="fu">plot!</span>(figure2, xplot, <span class="fu">zero</span>(xplot),</span>
-<span id="cb11-33"><a href="#cb11-33"></a>color <span class="op">=</span> <span class="fl">2</span>,</span>
-<span id="cb11-34"><a href="#cb11-34"></a>label <span class="op">=</span> <span class="st">"nullcline "</span> <span class="op">*</span> L<span class="st">"x"</span>,</span>
-<span id="cb11-35"><a href="#cb11-35"></a>lw <span class="op">=</span> <span class="fl">2</span>)</span>
-<span id="cb11-36"><a href="#cb11-36"></a><span class="fu">vline!</span>(figure2, [m<span class="op">*</span>h<span class="op">/</span>(b<span class="op">-</span>m)],</span>
-<span id="cb11-37"><a href="#cb11-37"></a>    color <span class="op">=</span> <span class="fl">2</span>,</span>
-<span id="cb11-38"><a href="#cb11-38"></a>    label <span class="op">=</span> <span class="cn">false</span>,</span>
-<span id="cb11-39"><a href="#cb11-39"></a>    lw <span class="op">=</span> <span class="fl">2</span>)</span>
-<span id="cb11-40"><a href="#cb11-40"></a>        </span>
-<span id="cb11-41"><a href="#cb11-41"></a><span class="co"># dot y nullcline</span></span>
-<span id="cb11-42"><a href="#cb11-42"></a><span class="fu">vline!</span>(figure2, [<span class="fl">0</span>],</span>
-<span id="cb11-43"><a href="#cb11-43"></a>    color <span class="op">=</span> <span class="fl">3</span>,</span>
-<span id="cb11-44"><a href="#cb11-44"></a>    lw <span class="op">=</span> <span class="fl">2</span>,</span>
-<span id="cb11-45"><a href="#cb11-45"></a>    label <span class="op">=</span> <span class="st">"nullcline "</span> <span class="op">*</span> L<span class="st">"y"</span>)</span>
-<span id="cb11-46"><a href="#cb11-46"></a>    </span>
-<span id="cb11-47"><a href="#cb11-47"></a><span class="fu">plot!</span>(figure2, xplot, r<span class="op">./</span>c<span class="op">.*</span>(h<span class="op">.+</span>xplot)<span class="op">.*</span>(<span class="fl">1</span> <span class="op">.-</span>xplot<span class="op">./</span>K),</span>
-<span id="cb11-48"><a href="#cb11-48"></a>    color <span class="op">=</span> <span class="fl">3</span>,</span>
-<span id="cb11-49"><a href="#cb11-49"></a>    lw <span class="op">=</span> <span class="fl">2</span>,</span>
-<span id="cb11-50"><a href="#cb11-50"></a>    label <span class="op">=</span> <span class="cn">false</span>)</span>
-<span id="cb11-51"><a href="#cb11-51"></a></span>
-<span id="cb11-52"><a href="#cb11-52"></a><span class="co"># equilibria</span></span>
-<span id="cb11-53"><a href="#cb11-53"></a><span class="fu">plot!</span>(figure2, (<span class="fl">0</span>, <span class="fl">0</span>), </span>
-<span id="cb11-54"><a href="#cb11-54"></a>    markershape <span class="op">=</span> <span class="op">:</span>circle, </span>
-<span id="cb11-55"><a href="#cb11-55"></a>    markersize <span class="op">=</span> <span class="fl">5</span>,</span>
-<span id="cb11-56"><a href="#cb11-56"></a>    label <span class="op">=</span> <span class="cn">false</span>,</span>
-<span id="cb11-57"><a href="#cb11-57"></a>    color <span class="op">=</span> <span class="fl">4</span>)</span>
-<span id="cb11-58"><a href="#cb11-58"></a></span>
-<span id="cb11-59"><a href="#cb11-59"></a><span class="fu">plot!</span>(figure2, (K, <span class="fl">0</span>), </span>
-<span id="cb11-60"><a href="#cb11-60"></a>    markershape <span class="op">=</span> <span class="op">:</span>circle, </span>
-<span id="cb11-61"><a href="#cb11-61"></a>    markersize <span class="op">=</span> <span class="fl">5</span>,</span>
-<span id="cb11-62"><a href="#cb11-62"></a>    label <span class="op">=</span> <span class="cn">false</span>,</span>
-<span id="cb11-63"><a href="#cb11-63"></a>    color <span class="op">=</span> <span class="fl">4</span>)</span>
-<span id="cb11-64"><a href="#cb11-64"></a></span>
-<span id="cb11-65"><a href="#cb11-65"></a><span class="fu">plot!</span>(figure2, (m<span class="op">*</span>h<span class="op">/</span>(b<span class="op">-</span>m), r<span class="op">/</span><span class="fu">c*</span>(h<span class="op">+</span>m<span class="op">*</span>h<span class="op">/</span>(b<span class="op">-</span>m))<span class="fu">*</span>(<span class="fl">1</span><span class="op">-</span>m<span class="op">*</span>h<span class="op">/</span>(b<span class="op">-</span>m)<span class="op">/</span>K)),</span>
-<span id="cb11-66"><a href="#cb11-66"></a>    markershape <span class="op">=</span> <span class="op">:</span>circle, </span>
-<span id="cb11-67"><a href="#cb11-67"></a>    markersize <span class="op">=</span> <span class="fl">5</span>,</span>
-<span id="cb11-68"><a href="#cb11-68"></a>    label <span class="op">=</span> <span class="cn">false</span>,</span>
-<span id="cb11-69"><a href="#cb11-69"></a>    color <span class="op">=</span> <span class="fl">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb11-28"><a href="#cb11-28"></a></span>
+<span id="cb11-29"><a href="#cb11-29"></a><span class="co"># nullclines</span></span>
+<span id="cb11-30"><a href="#cb11-30"></a>xplot <span class="op">=</span> <span class="op">-</span><span class="fl">0.2</span><span class="op">:</span><span class="fl">.1</span><span class="op">:</span>K</span>
+<span id="cb11-31"><a href="#cb11-31"></a></span>
+<span id="cb11-32"><a href="#cb11-32"></a><span class="co"># dot x nullcline</span></span>
+<span id="cb11-33"><a href="#cb11-33"></a><span class="fu">plot!</span>(figure2, xplot, <span class="fu">zero</span>(xplot),</span>
+<span id="cb11-34"><a href="#cb11-34"></a>      color <span class="op">=</span> <span class="fl">2</span>,</span>
+<span id="cb11-35"><a href="#cb11-35"></a>      label <span class="op">=</span> <span class="st">"nullcline "</span> <span class="op">*</span> L<span class="st">"\dot x"</span>,</span>
+<span id="cb11-36"><a href="#cb11-36"></a>      lw <span class="op">=</span> <span class="fl">2</span>)</span>
+<span id="cb11-37"><a href="#cb11-37"></a></span>
+<span id="cb11-38"><a href="#cb11-38"></a><span class="fu">vline!</span>(figure2, [m<span class="op">*</span>h<span class="op">/</span>(b<span class="op">-</span>m)],</span>
+<span id="cb11-39"><a href="#cb11-39"></a>       color <span class="op">=</span> <span class="fl">2</span>,</span>
+<span id="cb11-40"><a href="#cb11-40"></a>       label <span class="op">=</span> <span class="cn">false</span>,</span>
+<span id="cb11-41"><a href="#cb11-41"></a>       lw <span class="op">=</span> <span class="fl">2</span>)</span>
+<span id="cb11-42"><a href="#cb11-42"></a>        </span>
+<span id="cb11-43"><a href="#cb11-43"></a><span class="co"># dot y nullcline</span></span>
+<span id="cb11-44"><a href="#cb11-44"></a><span class="fu">vline!</span>(figure2, [<span class="fl">0</span>],</span>
+<span id="cb11-45"><a href="#cb11-45"></a>       color <span class="op">=</span> <span class="fl">3</span>,</span>
+<span id="cb11-46"><a href="#cb11-46"></a>       lw <span class="op">=</span> <span class="fl">2</span>,</span>
+<span id="cb11-47"><a href="#cb11-47"></a>       label <span class="op">=</span> <span class="st">"nullcline "</span> <span class="op">*</span> L<span class="st">"\dot y"</span>)</span>
+<span id="cb11-48"><a href="#cb11-48"></a>    </span>
+<span id="cb11-49"><a href="#cb11-49"></a><span class="fu">plot!</span>(figure2, xplot, r<span class="op">./</span>c<span class="op">.*</span>(h<span class="op">.+</span>xplot)<span class="op">.*</span>(<span class="fl">1</span> <span class="op">.-</span>xplot<span class="op">./</span>K),</span>
+<span id="cb11-50"><a href="#cb11-50"></a>      color <span class="op">=</span> <span class="fl">3</span>,</span>
+<span id="cb11-51"><a href="#cb11-51"></a>      lw <span class="op">=</span> <span class="fl">2</span>,</span>
+<span id="cb11-52"><a href="#cb11-52"></a>      label <span class="op">=</span> <span class="cn">false</span>)</span>
+<span id="cb11-53"><a href="#cb11-53"></a></span>
+<span id="cb11-54"><a href="#cb11-54"></a><span class="co"># equilibria</span></span>
+<span id="cb11-55"><a href="#cb11-55"></a><span class="fu">plot!</span>(figure2, (<span class="fl">0</span>, <span class="fl">0</span>), </span>
+<span id="cb11-56"><a href="#cb11-56"></a>    markershape <span class="op">=</span> <span class="op">:</span>circle, </span>
+<span id="cb11-57"><a href="#cb11-57"></a>    markersize <span class="op">=</span> <span class="fl">5</span>,</span>
+<span id="cb11-58"><a href="#cb11-58"></a>    label <span class="op">=</span> <span class="cn">false</span>,</span>
+<span id="cb11-59"><a href="#cb11-59"></a>    color <span class="op">=</span> <span class="fl">4</span>)</span>
+<span id="cb11-60"><a href="#cb11-60"></a></span>
+<span id="cb11-61"><a href="#cb11-61"></a><span class="fu">plot!</span>(figure2, (K, <span class="fl">0</span>), </span>
+<span id="cb11-62"><a href="#cb11-62"></a>    markershape <span class="op">=</span> <span class="op">:</span>circle, </span>
+<span id="cb11-63"><a href="#cb11-63"></a>    markersize <span class="op">=</span> <span class="fl">5</span>,</span>
+<span id="cb11-64"><a href="#cb11-64"></a>    label <span class="op">=</span> <span class="cn">false</span>,</span>
+<span id="cb11-65"><a href="#cb11-65"></a>    color <span class="op">=</span> <span class="fl">4</span>)</span>
+<span id="cb11-66"><a href="#cb11-66"></a></span>
+<span id="cb11-67"><a href="#cb11-67"></a><span class="fu">plot!</span>(figure2, (m<span class="op">*</span>h<span class="op">/</span>(b<span class="op">-</span>m), r<span class="op">/</span><span class="fu">c*</span>(h<span class="op">+</span>m<span class="op">*</span>h<span class="op">/</span>(b<span class="op">-</span>m))<span class="fu">*</span>(<span class="fl">1</span><span class="op">-</span>m<span class="op">*</span>h<span class="op">/</span>(b<span class="op">-</span>m)<span class="op">/</span>K)),</span>
+<span id="cb11-68"><a href="#cb11-68"></a>    markershape <span class="op">=</span> <span class="op">:</span>circle, </span>
+<span id="cb11-69"><a href="#cb11-69"></a>    markersize <span class="op">=</span> <span class="fl">5</span>,</span>
+<span id="cb11-70"><a href="#cb11-70"></a>    label <span class="op">=</span> <span class="cn">false</span>,</span>
+<span id="cb11-71"><a href="#cb11-71"></a>    color <span class="op">=</span> <span class="fl">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 
 </div>
